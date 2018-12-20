@@ -24,6 +24,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     next()
+    return
   }
   let token = localStorage.getItem('token')
   if (token) {
