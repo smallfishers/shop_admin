@@ -47,7 +47,7 @@ export default {
         if (valid) {
           axios({
             method: 'post',
-            url: 'http://localhost:8888/api/private/v1/login',
+            url: ' http://localhost:8888/api/private/v1/login ',
             data: this.form
           }).then(res => {
             if (res.data.meta.status === 200) {
