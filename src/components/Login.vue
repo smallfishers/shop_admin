@@ -1,12 +1,17 @@
 <template>
   <div class="login">
     <el-form ref="form" status-icon :rules="rules" :model="form" label-width="80px">
-      <img src="@/assets/avatar.jpg" alt="">
+      <img src="@/assets/avatar.jpg" alt>
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username"></el-input>
       </el-form-item>
-       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password"></el-input>
+      <el-form-item label="密码" prop="password">
+        <el-input
+          v-model="form.password"
+          type="password"
+          placeholder="请输入密码"
+          @keyup.enter.native="login"
+        ></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="login">登录</el-button>
@@ -17,7 +22,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   data() {
     return {
@@ -43,27 +47,29 @@ export default {
     },
 
     login() {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
+        if (!valid) return false
         if (valid) {
-          axios({
+          let res = await this.axios({
             method: 'post',
-            url: ' http://localhost:8888/api/private/v1/login ',
+            url: 'login ',
             data: this.form
-          }).then(res => {
-            if (res.data.meta.status === 200) {
-              this.$message.success('登录成功')
-              localStorage.setItem('token', res.data.data.token)
-              this.$router.push('/home')
-            } else {
-              this.$message({
-                message: res.data.meta.msg,
-                type: 'error',
-                duration: 1000
-              })
-            }
           })
-        } else {
-          return false
+          let {
+            meta: { status, msg },
+            data: { token }
+          } = res
+          if (status === 200) {
+            this.$message.success('登录成功')
+            localStorage.setItem('token', token)
+            this.$router.push('/home')
+          } else {
+            this.$message({
+              message: msg,
+              type: 'error',
+              duration: 1000
+            })
+          }
         }
       })
     }

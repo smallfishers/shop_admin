@@ -57,20 +57,19 @@
 <script>
 export default {
   methods: {
-    logout() {
-      this.$confirm('你确定要退出系统吗', '温馨提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$message.success('退出成功')
-          localStorage.removeItem('token')
-          this.$router.push('/login')
+    async logout() {
+      try {
+        await this.$confirm('你确定要退出系统吗', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
-        .catch(() => {
-          this.$message.info('取消退出')
-        })
+        this.$message.success('退出成功')
+        localStorage.removeItem('token')
+        this.$router.push('/login')
+      } catch (e) {
+        this.$message.info('取消退出')
+      }
     }
   }
 }
